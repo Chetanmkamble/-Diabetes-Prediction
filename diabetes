@@ -1,0 +1,44 @@
+# Importing  necessary libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+df=pd.read_csv("diabetes.csv") # Read the CSV file 
+print(df.head())  # Display the first few rows of the dataset
+
+X = df.drop('Outcome', axis=1)  # Split the dataset into features (X) and labels (y)
+y = df['Outcome']
+
+# get  the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+model = DecisionTreeClassifier(random_state=42)     # Create a Decision Tree model
+
+
+
+model.fit(X_train, y_train)     # Train the model
+
+
+y_pred = model.predict(X_test)    # Prediction on the test set
+
+# get the number of people with and without diabetes in the test set
+diabetes_count = y_test[y_test == 1].count()
+no_diabetes_count = y_test[y_test == 0].count()
+
+
+people_with_diabetes = df.loc[y_test[y_test == 1].index]
+
+print("People with diabetes:")
+print(people_with_diabetes)
+
+
+print("Number of people with diabetes:", diabetes_count)
+print("Number of people without diabetes:", no_diabetes_count)
+
+
+# Evaluate the model
+print("Accuracy Score:", accuracy_score(y_test, y_pred))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("Classification Report:\n", classification_report(y_test, y_pred))
